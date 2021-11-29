@@ -1,10 +1,13 @@
 const User = require("../models/User");
+const { v4: uuidv4 } = require('uuid');
 
 class UserController{
 
   async index(req, res){
     let users = await User.findAll();
-    res.json(users);
+    
+    let userid = uuidv4();
+    res.json({token: userid, users});
   }
 
   async findOne(req, res){
@@ -61,6 +64,41 @@ class UserController{
     }else{
       res.status(500);
       return res.json({err: "Internal server error during the user creation."});
+    }
+  }
+
+  async edit(req, res){
+    const {name, email, role} = req.body;
+    const user = {id: req.params.id, name, email, role};
+
+    let result = await User.update(user);
+    if(result != undefined){
+      if(result.status){
+        res.status(200);
+        res.json({res: 'User updated!'});
+
+      }else{
+        res.status(406);
+        res.json({result});
+
+      }
+    }else{
+      res.status(500);
+      res.json({err: 'Internal server error!'});
+    }
+  }
+
+  async delete(req, res){
+    const id = req.params.id;
+
+    let result = await User.destroy(id);
+
+    if(result.status){
+      res.status(200);
+      res.json({res: 'User deleted.'});
+    }else{
+      res.status(406);
+      res.json({result});
     }
   }
 }
