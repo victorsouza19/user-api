@@ -1,13 +1,11 @@
-const User = require("../models/User");
-const { v4: uuidv4 } = require('uuid');
+const User = require("../models/User"),
+PasswordToken = require("../models/PasswordToken");
 
 class UserController{
 
   async index(req, res){
     let users = await User.findAll();
-    
-    let userid = uuidv4();
-    res.json({token: userid, users});
+    res.json({users});
   }
 
   async findOne(req, res){
@@ -99,6 +97,44 @@ class UserController{
     }else{
       res.status(406);
       res.json({result});
+    }
+  }
+
+  async recoverPassword(req, res){
+    const email = req.body.email;
+
+    let result = await PasswordToken.create(email);
+
+    if(result.status){
+      /* Send e-mail to user with NodeMailer.send(result.token)*/ 
+      res.status(200);
+      return res.json({result});
+
+    }else{
+      res.status(406);
+      return res.json({result});
+
+    }
+  }
+
+  async changePassword(req,res){
+    let token = req.body.token;
+    let password = req.body.password;
+
+    let isTokenValid = await PasswordToken.validate(token);
+
+    if(isTokenValid.status){
+      let id = isTokenValid.token.users_id;
+      let data = {newPassword: password, token, id}
+      await User.changePassword(data);
+      res.status(200);
+      res.json({res: 'Password changed.'})
+
+
+
+    }else{
+      res.status(406);
+      res.json({err: 'Invalid token.'})
     }
   }
 }
