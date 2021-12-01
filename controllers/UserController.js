@@ -51,7 +51,7 @@ class UserController{
     }else{
       role = 0;
     }
-
+   
     let userData = await User.findEmail(email);
     if(userData.status){
       res.status(406);
@@ -178,13 +178,11 @@ class UserController{
     let data = await User.findEmail(email);
 
     if(data.user != undefined){
-      console.log(data);
-
       let result = await bcrypt.compare(password, data.user.password);
 
       if(result){
         let jwt_token = jwt.sign({email: data.user.email, role: data.user.role}, process.env.JWT_SECRET);
-          
+
         res.status(200);
         res.json({token: jwt_token});
 
