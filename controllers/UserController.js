@@ -1,5 +1,10 @@
 const User = require("../models/User"),
-PasswordToken = require("../models/PasswordToken");
+PasswordToken = require("../models/PasswordToken"),
+nodemailer = require('nodemailer'),
+bcrypt = require('bcrypt'),
+jwt = require('jsonwebtoken');
+
+require('dotenv').config();
 
 class UserController{
 
@@ -47,8 +52,8 @@ class UserController{
       role = 0;
     }
 
-    let emailExists = await User.findEmail(email);
-    if(emailExists){
+    let userData = await User.findEmail(email);
+    if(userData.status){
       res.status(406);
       return res.json({err: "E-mail already in use."});
     }
@@ -104,11 +109,40 @@ class UserController{
     const email = req.body.email;
 
     let result = await PasswordToken.create(email);
-
+    
     if(result.status){
-      /* Send e-mail to user with NodeMailer.send(result.token)*/ 
+      /* nodemailer config */
+      let transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        secure: process.env.EMAIL_SECURE,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD
+        }
+      });
+
+      transporter.sendMail({
+        from: `User API <${process.env.EMAIL_USER}>`,
+        to: `${email}`,
+        subject: "User API - Password Recovery",
+        html: `
+        <h3> Hello, I'm a User API admin!</h3>
+        <p>You requested pasword recovery, and here is your recovery token: </p>
+        <p><strong>${result.token}</strong></p>
+        <p>Make a request to the password reset route passing the new password and this token to make the change.</p>
+        <p>Thank you and enjoy our API (: </p>
+        `
+      }).then(message => {
+        console.log(message);
+      }).catch(err => {
+        console.log(err);
+      });
+
       res.status(200);
-      return res.json({result});
+      return res.json({
+        res: `Recovery token sent to ${email}`
+      });
 
     }else{
       res.status(406);
@@ -135,6 +169,32 @@ class UserController{
     }else{
       res.status(406);
       res.json({err: 'Invalid token.'})
+    }
+  }
+
+  async login(req, res){
+    const {email, password} = req.body;
+
+    let data = await User.findEmail(email);
+
+    if(data.user != undefined){
+      console.log(data);
+
+      let result = await bcrypt.compare(password, data.user.password);
+
+      if(result){
+        let jwt_token = jwt.sign({email: data.user.email, role: data.user.role}, process.env.JWT_SECRET);
+          
+        res.status(200);
+        res.json({token: jwt_token});
+
+      }else{
+        res.status(406);
+        return res.json({err: 'Wrong e-mail or password'});
+      }
+    }else{
+      res.status(404);
+      return res.json({err: 'User not found'});
     }
   }
 }

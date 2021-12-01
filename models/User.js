@@ -1,6 +1,6 @@
 const knex = require("../database/connection"),
+PasswordToken = require("./PasswordToken"),
 bcrypt = require('bcrypt');
-const PasswordToken = require("./PasswordToken");
 
 class User{
 
@@ -34,25 +34,6 @@ class User{
     }
   }
 
-  async findByEmail(email){
-    try {
-      let result = await knex.select(["id", "name", "email", "role"])
-      .table('users')
-      .where({email});
-
-      if(result.length > 0){
-        return result[0];
-      }else{
-        return undefined;
-      }
-      
-
-    } catch (error) {
-      console.log(err);
-      return undefined;
-    }
-  }
-
   async insert(user){
     try {
       let {email, password, name, role} = user;
@@ -71,14 +52,14 @@ class User{
     try {
       let result = await knex.select("*").from("users").where({email});
       if(result.length > 0){
-        return true;
+        return {status: true, user: result[0]};
       }else{
-        return false;
+        return {status: false};
       }
       
     } catch (error) {
       console.log(err);
-      return false;
+      return {status: false};
     }
   }
 

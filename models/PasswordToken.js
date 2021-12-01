@@ -1,10 +1,9 @@
 const knex = require("../database/connection"),
-User = require("./User");
-const { v4: uuidv4 } = require('uuid');
+{ v4: uuidv4 } = require('uuid');
 
 class PasswordToken{
   async create(email){
-    let user = await User.findByEmail(email);
+    let user = await this.findByEmail(email);
 
     if(user != undefined){
       try {
@@ -23,6 +22,25 @@ class PasswordToken{
       }
     }else{
       return {status: false, err: "E-mail not found!"};
+    }
+  }
+
+  async findByEmail(email){
+    try {
+      let result = await knex.select(["id", "name", "email", "role"])
+      .table('users')
+      .where({email});
+
+      if(result.length > 0){
+        return result[0];
+      }else{
+        return undefined;
+      }
+      
+
+    } catch (error) {
+      console.log(err);
+      return undefined;
     }
   }
 
