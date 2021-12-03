@@ -41,8 +41,25 @@ npm install
 
 Change the file <code>.envexample</code> with your environment variables:
 ```
-In progress...
+## database config
+DB_HOST=127.0.0.1
+DB_USER=user
+DB_PWD=password
+DB_NAME=database
+
+## E-mail trigger config
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=465
+EMAIL_USER=youremail@gmail.com
+EMAIL_PASSWORD=123456
+## if your SMTP server didn't use SSL/TLS put false
+EMAIL_SECURE=true
+
+## JWT config
+JWT_SECRET=f9f217a18745919771a7936b3a164121a
 ```
+
+After that, rename the file to <code>.env</code>
 
 ## ☕ Using the UserAPI.
 
