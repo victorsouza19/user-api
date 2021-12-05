@@ -10,5 +10,5 @@ app.use(express.json());
 app.use("/", router);
 
 app.listen(8001, () => {
-  console.log("Server running.");
+  console.log("Server running on 8001 port.");
 });
