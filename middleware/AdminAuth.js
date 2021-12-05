@@ -15,8 +15,8 @@ module.exports = function(req, res, next){
         if(decoded.role == 1){
           next();
         }else{
-          res.status(401);
-          return res.json({err: 'Unauthorized request, you do not have the necessary permission.'});
+          res.status(403);
+          return res.json({err: 'Forbidden request, you do not have the necessary permission.'});
         }
         
       } catch (error) {
