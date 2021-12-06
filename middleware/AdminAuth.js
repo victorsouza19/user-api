@@ -10,7 +10,6 @@ module.exports = function(req, res, next){
       let token = bearer[1];
       try {
         var decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
 
         if(decoded.role == 1){
           next();
