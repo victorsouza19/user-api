@@ -5,6 +5,7 @@ UserController = require("../controllers/UserController"),
 AdminAuth = require("../middleware/AdminAuth");
 
 router.get("/", HomeController.index);
+router.post("/validate", AdminAuth, HomeController.validate);
 
 // Users
 router.post("/users", UserController.create);
@@ -15,6 +16,5 @@ router.delete("/users/:id", AdminAuth, UserController.delete);
 router.post("/users/recover", UserController.recoverPassword);
 router.post("/users/changepassword", UserController.changePassword);
 router.post("/login", UserController.login);
-router.post("/validate", AdminAuth, HomeController.validate);
 
 module.exports = router;

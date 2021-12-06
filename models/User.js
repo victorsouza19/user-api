@@ -74,8 +74,9 @@ class User{
         if(email != undefined){
           if(email != userData.email){
             let result = await this.findEmail(email);
+            console.log(result);
 
-            if(result == false){
+            if(result.status == false){
               userEdit.email = email;
             }else{
               return {status: false, err: "E-mail already in use!"}

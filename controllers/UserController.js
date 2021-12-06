@@ -128,7 +128,7 @@ class UserController{
         subject: "User API - Password Recovery",
         html: `
         <h3> Hello, I'm a User API admin!</h3>
-        <p>You requested pasword recovery, and here is your recovery token: </p>
+        <p>You requested password recovery, and here is your recovery token: </p>
         <p><strong>${result.token}</strong></p>
         <p>Make a request to the password reset route passing the new password and this token to make the change.</p>
         <p>Thank you and enjoy our API (: </p>
