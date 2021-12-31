@@ -327,11 +327,85 @@ This endpoint is responsible to create a user.
 </details>
       
 <details>
-<summary><strong>PUT</strong> <code>/users/:id</code> :construction:</summary>
+<summary><strong>PUT</strong> <code>/users/:id</code> :construction:</summary> 
 </details>
       
 <details>
-<summary><strong>DELETE</strong> <code>/users/:id</code> :construction:</summary>
+<summary><strong>DELETE</strong> <code>/users/:id</code></summary>
+<br>
+This endpoint is responsible to delete an specific user.
+
++ #### Parameters
+  
+  id: id of the user that you want to delete.
+  
+  Example:
+  <code>/users/8</code>
+
++ #### Responses
+  - #### 200 - OK!
+    In this case, you will receive a message confirming the user delete.
+
+    Response example:
+    ```
+    {
+      "res": "User has been deleted"
+    }
+    ```
+
+  - #### 401 - Unauthorized! 
+    If this response happens, it means that some failure occurred during the request authentication process.
+  
+    **Reasons:** Missing, invalid or expired auth token.
+
+    Response example:
+    ```
+    {
+      "err": "Unauthorized request, please login."
+    }
+    ```
+  
+   - #### 403 - Forbidden! 
+     If this response happens, it means that the user do not have the necessary permission to access this route.
+  
+     **Reasons:** Insuficient permission.
+  
+     Response example:
+     ```
+     {
+      "err": "Forbidden request, you do not have the necessary permission."
+     }
+     ```
+  
+   - #### 404 - Not Found! 
+     If this response happens, it means that the user couldn't be located at the database.
+  
+     **Reasons:** User doesn't exists.
+  
+     Response example:
+     ```
+     {
+      "res": "User not found."
+     }
+     ```
+  
+   - #### 500 - Intern error! 
+     If this response happens, it means that some failure occurred during the database lookup process.
+  
+     **Reasons:** Query problems, database problems.
+  
+     Response Example:
+     ```
+     <!DOCTYPE html>
+     <html lang="en">
+      <head>
+       <meta charset="utf-8">
+       <title>Error</title>
+     </head>
+     <body>
+       <pre>ReferenceError: ...
+     ```
+  
 </details>
        
 <details>
